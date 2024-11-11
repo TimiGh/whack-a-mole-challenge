@@ -1,1 +1,23 @@
-<p>playground works!</p>
+<div>Score: {{currentScore}}</div>
+
+<div>
+  @for (hole of holes; track hole.id) {
+    <app-hole [id]="hole.id" [isMoleVisible]="hole.isVisible" (onMoleHit)="updateScore($event)"></app-hole>
+  }
+</div>
+
+
+<dialog #startGameDialog>
+  <h1>Welcome to Whack-A-Mole!</h1>
+  <span>Click the button below to start the game!</span>
+  <button (click)="startGame()">Start</button>
+</dialog>
+
+<!--<dialog #endGameDialog>-->
+<!--  <h1>Game Over!</h1>-->
+<!--  @if (currentScore > highscore) {-->
+<!--    <span>New Highscore!!!</span>-->
+<!--  }-->
+<!--  <span>{{ currentScore }} moles whacked!</span>-->
+<!--  <button (click)="startGame()">Start Again</button>-->
+<!--</dialog>-->

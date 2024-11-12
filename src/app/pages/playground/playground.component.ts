@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild, viewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnInit, viewChild} from '@angular/core';
 import {HoleComponent} from "../../components/hole/hole.component";
 
 @Component({
@@ -11,19 +11,20 @@ import {HoleComponent} from "../../components/hole/hole.component";
   styleUrl: './playground.component.scss'
 })
 export class PlaygroundComponent implements OnInit, AfterViewChecked {
-   leaderboard: { score: number, date: string }[] = [];
+  leaderboard: { score: number, date: string }[] = [];
   highscore: number = 0;
   currentScore: number = 0;
   time: number = 0;
   gameInterval: any;
-  startDialog = viewChild<ElementRef<HTMLDialogElement>>('startGameDialog');
+  // startDialog = viewChild<ElementRef<HTMLDialogElement>>('startGameDialog');
+  isSDOpen: boolean = false;
   // endDialog = viewChild<ElementRef<HTMLDialogElement>>('endGameDialog');
   protected holes = Array.from({length: 6}, (_, i) => ({id: i, isVisible: false}));
-  isSDOpen: boolean = false;
 
   ngOnInit(): void {
     this.isSDOpen = true;
-    this.showStartScreen();
+    // this.showStartScreen();
+    this.startGame();
   }
 
   ngAfterViewChecked(): void {
@@ -44,7 +45,7 @@ export class PlaygroundComponent implements OnInit, AfterViewChecked {
 
   startGame() {
     this.isSDOpen = false;
-    this.startDialog()?.nativeElement.close();
+    // this.startDialog()?.nativeElement.close();
     this.currentScore = 0;
     this.gameInterval = setInterval(() => {
       const randomHole = Math.floor(Math.random() * this.holes.length);
@@ -55,12 +56,20 @@ export class PlaygroundComponent implements OnInit, AfterViewChecked {
     // this.endDialog()?.nativeElement.close();
   }
 
+  updateHighscore(): void {
+    this.highscore = Math.max(this.currentScore, this.highscore);
+  }
+
   endGame(): void {
     clearTimeout(this.gameInterval);
+    this.updateHighscore();
     // this.endDialog()?.nativeElement.showModal();
   }
 
   updateScore(isMoleHit: boolean) {
+    if (this.time >= 30) {
+      return;
+    }
     isMoleHit ? this.currentScore++ : this.currentScore = Math.max(this.currentScore - 1, 0);
   }
 

@@ -1,6 +1,16 @@
+.playground {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 2rem;
+}
+
 dialog {
   display: flex;
   flex-direction: column;
   align-items: center; gap: 2rem;
-  backdrop-filter: blur(60px);
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(5px);
 }

@@ -1,1 +1,3 @@
-<div (click)="hitMole()">{{id()}}{{isMoleVisible()}}</div>
+<!--<div (click)="hitMole()">{{id()}}{{isMoleVisible()}}</div>-->
+  <div class="hole" [ngClass]="{'visible-mole': isMoleVisible(), 'hit': isHit, 'miss': isMiss}" (click)="hitMole()"></div>
+

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, viewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild, viewChild} from '@angular/core';
 import {HoleComponent} from "../../components/hole/hole.component";
 
 @Component({
@@ -10,8 +10,8 @@ import {HoleComponent} from "../../components/hole/hole.component";
   templateUrl: './playground.component.html',
   styleUrl: './playground.component.scss'
 })
-export class PlaygroundComponent implements OnInit {
-  leaderboard: { score: number, date: string }[] = [];
+export class PlaygroundComponent implements OnInit, AfterViewChecked {
+   leaderboard: { score: number, date: string }[] = [];
   highscore: number = 0;
   currentScore: number = 0;
   time: number = 0;
@@ -19,13 +19,20 @@ export class PlaygroundComponent implements OnInit {
   startDialog = viewChild<ElementRef<HTMLDialogElement>>('startGameDialog');
   // endDialog = viewChild<ElementRef<HTMLDialogElement>>('endGameDialog');
   protected holes = Array.from({length: 6}, (_, i) => ({id: i, isVisible: false}));
+  isSDOpen: boolean = false;
 
   ngOnInit(): void {
+    this.isSDOpen = true;
     this.showStartScreen();
   }
 
+  ngAfterViewChecked(): void {
+    // this.showStartScreen();
+  }
+
   showStartScreen(): void {
-    this.startDialog()?.nativeElement.showModal();
+    // this.startGame();
+    // this.startDialog()?.nativeElement.showModal();
   }
 
   showMole(id: number): void {
@@ -36,21 +43,28 @@ export class PlaygroundComponent implements OnInit {
   }
 
   startGame() {
+    this.isSDOpen = false;
     this.startDialog()?.nativeElement.close();
     this.currentScore = 0;
     this.gameInterval = setInterval(() => {
       const randomHole = Math.floor(Math.random() * this.holes.length);
       this.showMole(randomHole);
-    }, 2000)
+      this.time++;
+    }, 1000)
     setTimeout(() => this.endGame(), 30000)
     // this.endDialog()?.nativeElement.close();
   }
 
   endGame(): void {
     clearTimeout(this.gameInterval);
+    // this.endDialog()?.nativeElement.showModal();
   }
 
   updateScore(isMoleHit: boolean) {
     isMoleHit ? this.currentScore++ : this.currentScore = Math.max(this.currentScore - 1, 0);
+  }
+
+  hideMole(id: number) {
+    this.holes[id].isVisible = false;
   }
 }
